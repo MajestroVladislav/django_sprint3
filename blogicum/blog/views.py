@@ -1,81 +1,63 @@
 from django.shortcuts import render, get_object_or_404
-from django.utils import timezone
-from django.db.models import Q, F
 from .models import Post, Category
+from django.db.models import Q
+from django.utils import timezone
+from django.conf import settings
 
 
 def index(request):
-    now = timezone.now()
-    posts = Post.objects.filter(
-        pub_date__lte=now,
-        is_published=True,
-        category__is_published=True
-    ).annotate(
-        location_is_published=F('location__is_published')
+    # Используем select_related для оптимизации и гарантии загрузки связанных объектов
+    posts = Post.objects.select_related(
+        'category', 'location', 'author'
     ).filter(
-        Q(location__isnull=True) | Q(location_is_published=True)
-    ).order_by('-pub_date')[:5]
+        is_published=True,
+        pub_date__lte=timezone.now(),
+        Q(category__isnull=True) | Q(category__is_published=True),
+        Q(location__isnull=True) | Q(location__is_published=True),
+    ).order_by('-pub_date')[:settings.NUMBER_OF_POSTS_ON_MAIN_PAGE]
+
     context = {
-        'title': 'Главная страница блога',
-        'posts': posts
+        'title': 'Главная страница',
+        'posts': posts,
     }
-    print("DEBUG index posts sample types:",
-          [type(p) for p in list(posts)[:5]])
-    print("DEBUG index posts first repr:",
-          [repr(p) for p in list(posts)[:3]])
     return render(request, 'blog/index.html', context)
 
 
-def category_posts(request, slug):
-    category = get_object_or_404(Category, slug=slug,
-                                 is_published=True)
-    now = timezone.now()
-    posts = Post.objects.filter(
-        category=category,
-        is_published=True,
-        pub_date__lte=now
-    ).annotate(
-        location_is_published=F('location__is_published')
-    ).filter(
-        Q(location__isnull=True) | Q(location_is_published=True)
-    ).order_by('-pub_date')
-    context = {
-        'category': category,
-        'posts': posts,
-        'slug': slug,
-        'title': category.title
-    }
-    print("DEBUG category type:", type(category))
-    print("DEBUG category repr:",
-          getattr(category,
-                  '__repr__',
-                  lambda: str(category))())
-    print("DEBUG category posts sample types:",
-          [type(p) for p in list(posts)[:5]])
-    print("DEBUG category posts first repr:",
-          [repr(p) for p in list(posts)[:3]])
-    return render(request, 'blog/category.html', context)
-
-
 def post_detail(request, id):
-    now = timezone.now()
+    # Используем select_related для оптимизации и гарантии загрузки связанных объектов
     post = get_object_or_404(
-        Post.objects.filter(
-            is_published=True,
-            pub_date__lte=now,
-            category__is_published=True,
-        ).annotate(
-            location_is_published=F('location__is_published')
-        ).filter(
-            Q(location__isnull=True) | Q(location_is_published=True)
-        ),
-        pk=id
+        Post.objects.select_related('category', 'location', 'author'),
+        pk=id,
+        is_published=True,
+        pub_date__lte=timezone.now(),
+        Q(category__isnull=True) | Q(category__is_published=True),
+        Q(location__isnull=True) | Q(location__is_published=True),
     )
     context = {
-        'post': post,
         'title': post.title,
-        'text': post.text,
+        'post': post,
     }
-    print("DEBUG post type:", type(post))
-    print("DEBUG post repr:", repr(post))
     return render(request, 'blog/detail.html', context)
+
+
+def category_posts(request, slug):
+    # Категория должна быть опубликована
+    category = get_object_or_404(
+        Category.objects.filter(is_published=True),
+        slug=slug
+    )
+    posts = Post.objects.select_related(
+        'category', 'location', 'author'
+    ).filter(
+        category=category,
+        is_published=True,
+        pub_date__lte=timezone.now(),
+        Q(location__isnull=True) | Q(location__is_published=True),
+    ).order_by('-pub_date')
+
+    context = {
+        'title': f'Записи категории "{category.title}"',
+        'category': category,
+        'posts': posts,
+    }
+    return render(request, 'blog/category.html', context)
