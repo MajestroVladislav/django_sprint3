@@ -24,10 +24,8 @@ app_name = 'blogicum'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(('blog.urls', 'blog'),
-                     namespace='blog')),
-    path('pages/', include(('pages.urls', 'pages'),
-                           namespace='pages')),
+    path('', include('blog.urls')),
+    path('pages/', include('pages.urls')),
 ]
 
 if settings.DEBUG:
