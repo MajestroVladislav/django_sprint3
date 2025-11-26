@@ -11,9 +11,14 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
 
 
 # Quick-start development settings - unsuitable for production
@@ -104,13 +109,20 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'ru'
+LANGUAGE_CODE = 'ru-RU'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
+
+USE_L10N = True
 
 USE_I18N = True
 
 USE_TZ = True
+
+LANGUAGES = (
+    ('ru', 'Русский'),
+    ('en', 'English'),
+)
 
 
 # Static files (CSS, JavaScript, Images)

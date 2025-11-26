@@ -1,126 +1,91 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 # Получаем модель пользователя Django
 User = get_user_model()
 
 
 class Category(models.Model):
-    """Модель для тематических категорий постов."""
-
-    title = models.CharField(
-        max_length=256,
-        verbose_name='Заголовок',
-        help_text='Максимальная длина строки — 256 символов'
-    )
-    description = models.TextField(
-        verbose_name='Описание',
-        help_text='Подробное описание категории'
-    )
+    title = models.CharField(_('Заголовок'), max_length=256)
+    description = models.TextField(_('Описание'))
     slug = models.SlugField(
+        _('Идентификатор'),
         unique=True,
-        verbose_name='Слаг',
-        help_text='Уникальное значение для URL'
+        help_text=_('Идентификатор страницы для URL;'
+                    ' разрешены символы латиницы,'
+                    ' цифры, дефис и подчёркивание.')
     )
     is_published = models.BooleanField(
+        _('Опубликовано'),
         default=True,
-        verbose_name='Опубликовано',
-        help_text='Снимите галочку, чтобы скрыть категорию'
+        help_text=_('Снимите галочку, чтобы скрыть публикацию.')
     )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Дата создания'
-    )
+    created_at = models.DateTimeField(_('Добавлено'),
+                                      auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категории'
-        ordering = ('title',)
+        verbose_name = _('категория')
+        verbose_name_plural = _('Категории')
 
     def __str__(self):
         return self.title
 
 
 class Location(models.Model):
-    """Модель для географических меток."""
-
-    name = models.CharField(
-        max_length=256,
-        verbose_name='Название локации',
-        help_text='Максимальная длина строки — 256 символов'
-    )
-    is_published = models.BooleanField(
-        default=True,
-        verbose_name='Опубликовано',
-        help_text='Снимите галочку, чтобы скрыть локацию'
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Дата создания'
-    )
+    name = models.CharField(_('Название места'),
+                            max_length=256)
+    is_published = models.BooleanField(_('Опубликовано'),
+                                       default=True)
+    created_at = models.DateTimeField(_('Добавлено'),
+                                      auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Локация'
-        verbose_name_plural = 'Локации'
-        ordering = ('name',)
+        verbose_name = _('местоположение')
+        verbose_name_plural = _('Местоположения')
 
     def __str__(self):
         return self.name
 
 
 class Post(models.Model):
-    """Модель для публикаций (постов) в блоге."""
-
-    title = models.CharField(
-        max_length=256,
-        verbose_name='Заголовок поста',
-        help_text='Максимальная длина строки — 256 символов'
-    )
-    text = models.TextField(
-        verbose_name='Основной текст поста',
-        help_text='Содержание публикации'
-    )
+    title = models.CharField(_('Заголовок'), max_length=256)
+    text = models.TextField(_('Текст'))
     pub_date = models.DateTimeField(
-        verbose_name='Дата публикации',
-        help_text='Выберите дату и время публикации'
+        _('Дата и время публикации'),
+        default=timezone.now,
+        help_text=_('Если установить дату и время в будущем '
+                    '— можно делать отложенные публикации.')
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        verbose_name='Автор',
-        help_text='Автор публикации'
+        verbose_name=_('Автор публикации')
     )
     location = models.ForeignKey(
         Location,
         on_delete=models.SET_NULL,
         null=True,
-        blank=True,  # Локация необязательна
-        verbose_name='Локация',
-        help_text='Местоположение, к которому относится пост (необязательно)'
+        blank=True,
+        verbose_name=_('Местоположение')
     )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
-        null=True,  # Позволяет установить NULL при удалении категории
-        blank=False,  # Категория обязательна
-        verbose_name='Категория',
-        help_text='Категория, к которой относится пост'
+        null=True,
+        blank=True,
+        verbose_name=_('Категория')
     )
-    is_published = models.BooleanField(
-        default=True,
-        verbose_name='Опубликовано',
-        help_text='Снимите галочку, чтобы скрыть публикацию'
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Дата добавления в БД'
-    )
+    is_published = models.BooleanField(_('Опубликовано'),
+                                       default=True)
+    created_at = models.DateTimeField(_('Добавлено'),
+                                      auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Публикация'
-        verbose_name_plural = 'Публикации'
-        ordering = ('-pub_date',)  # Сортировка по дате
+        verbose_name = _('публикация')
+        verbose_name_plural = _('Публикации')
+        ordering = ('-pub_date',)  # Добавляем сортировку
 
     def __str__(self):
         return self.title
