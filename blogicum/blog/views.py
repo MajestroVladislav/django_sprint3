@@ -19,6 +19,7 @@ def index(request):
         'title': 'Главная страница блога',
         'posts': posts
     }
+    print("DEBUG context keys:", list(context.keys()))
     return render(request, 'blog/index.html', context)
 
 
@@ -41,6 +42,7 @@ def category_posts(request, slug):
         'slug': slug,
         'title': category.title
     }
+    print("DEBUG context keys:", list(context.keys()))
     return render(request, 'blog/category.html', context)
 
 
@@ -63,4 +65,5 @@ def post_detail(request, id):
         'title': post.title,
         'text': post.text,
     }
+    print("DEBUG context keys:", list(context.keys()))
     return render(request, 'blog/detail.html', context)
