@@ -1,7 +1,7 @@
 {% load static %}
-<!DOCTYPE html> 
-<html lang="ru"> 
-  <head>    
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href={% static 'img/fav/favicon.ico' %} type="image">
@@ -11,55 +11,55 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <title>О проекте</title>
   </head>
-  <body>	   
+  <body>
     <header>
       <nav class="navbar navbar-light" style="background-color: lightskyblue">
         <div class="container">
-          <a class="navbar-brand" href="index.html">
-            <img src="img/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+          <a class="navbar-brand" href="{% url 'blog:index' %}"> <!-- Использование {% url %} -->
+            <img src="{% static 'img/logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt=""> <!-- Исправлен путь к static -->
             Блогикум
-          </a>        
+          </a>
           <ul class="nav  nav-pills">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">
+              <a class="nav-link" href="{% url 'blog:index' %}"> <!-- Использование {% url %} -->
                 Лента записей
               </a>
             </li>
-            <li class="nav-item">              
-              <a class="nav-link active" href="about.html">
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'pages:about' %}"> <!-- Использование {% url %} -->
                 О проекте
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="rules.html">
+              <a class="nav-link" href="{% url 'pages:rules' %}"> <!-- Использование {% url %} -->
                 Наши правила
               </a>
             </li>
-          </ul>      
+          </ul>
         </div>
-      </nav> 
+      </nav>
     </header>
     <main>
-      <div class="container py-5">                        
+      <div class="container py-5">
         <h1>О проекте</h1>
         <p>
-          Блогикум — это дом для творческих людей. Это — сообщество людей, для которых 
-          нет грани между ведением блога и дружбой в социальных сетях. 
+          Блогикум — это дом для творческих людей. Это — сообщество людей, для которых
+          нет грани между ведением блога и дружбой в социальных сетях.
         </p>
         <p>
-          Дружба и рассказы о новых, неизведанных впечатлениях — вот 
-          что вы найдете на нашем ресурсе.  Миллионы блогов по различным темам. 
-          Путешествия, политики, развлечения, мода, мода, литература, дизайн и все 
-          другие сферы человеческой деятельности. 
+          Дружба и рассказы о новых, неизведанных впечатлениях — вот
+          что вы найдете на нашем ресурсе. Миллионы блогов по различным темам.
+          Путешествия, политики, развлечения, мода, мода, литература, дизайн и все
+          другие сферы человеческой деятельности.
         </p>
         <p>
-          Творчество, разнообразие и свобода взглядов и самовыражения — 
+          Творчество, разнообразие и свобода взглядов и самовыражения —
           основные черты наших пользователей.
-        </p>           
+        </p>
       </div>
     </main>
     <footer class="border-top text-center py-3">
-      <p>© Блогикум</p>    
+      <p>© Блогикум</p>
     </footer>
   </body>
 </html>
