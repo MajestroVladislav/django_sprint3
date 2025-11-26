@@ -1,109 +1,85 @@
 {% load static %}
-<!DOCTYPE html> 
-<html lang="ru"> 
-  <head>    
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href={% static 'img/fav/favicon.ico' %} type="image">
+    <link rel="icon" href="{% static 'img/fav/favicon.ico' %}" type="image">
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/fav/apple-touch-icon.png' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/fav/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/fav/favicon-16x16.png' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <title>Лента записей</title>
   </head>
-  <body>	   
+  <body>
     <header>
       <nav class="navbar navbar-light" style="background-color: lightskyblue">
         <div class="container">
-          <a class="navbar-brand" href="index.html">
-            <img src="img/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+          <a class="navbar-brand" href="{% url 'blog:index' %}">
+            <img src="{% static 'img/logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
             Блогикум
-          </a>        
-          <ul class="nav  nav-pills">
+          </a>
+          <ul class="nav nav-pills">
             <li class="nav-item">
-              <a class="nav-link active" href="index.html">
+              <a class="nav-link active" href="{% url 'blog:index' %}">
                 Лента записей
               </a>
             </li>
-            <li class="nav-item">              
-              <a class="nav-link" href="about.html">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'pages:about' %}">
                 О проекте
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="rules.html">
+              <a class="nav-link" href="{% url 'pages:rules' %}">
                 Наши правила
               </a>
             </li>
-          </ul>      
+          </ul>
         </div>
-      </nav> 
+      </nav>
     </header>
     <main>
       <div class="container py-5">
-        <h1>Лента записей</h1>                        
-        <!-- Перебираем в цикле все посты -->
-        <hr>
-        <article>
-          <ul>
-            <li>
-              Место: Остров отчаянья              
-            </li>
-            <li>
-              Дата: 25 октября 1659 года
-            </li>
-            <li>
-              Категория: <a href="not-my-day">not-my-day</a>
-            </li>
-          </ul>          
-          <!-- Первые 10 слов -->
-          <p>
-            Всю ночь и весь день шел дождь и дул сильный ...
-          </p>
-          <a href="detail.html">Читать полный текст</a>
-        </article>
-        <hr>
-        <article>
-          <ul>
-            <li>
-              Место: Остров отчаянья              
-            </li>
-            <li>
-              Дата: 1 октября 1659 года
-            </li>
-            <li>
-              Категория: <a href="not-my-day">not-my-day</a>
-            </li>
-          </ul>
-          <!-- Первые 10 слов -->
-          <p>
-            Проснувшись поутру, я увидел, что наш корабль сняло с мели ...
-          </p>
-          <a href="detail.html">Читать полный текст</a>
-        </article>
-        <hr>
-        <article>
-          <ul>
-            <li>
-              Место: Остров отчаянья              
-            </li>
-            <li>
-              Дата: 30 сентября 1659 года.
-            </li>
-            <li>
-              Категория: <a href="travel">travel</a>
-            </li>
-          </ul>
-          <!-- Первые 10 слов -->
-          <p>
-            Наш корабль, застигнутый в открытом море страшным штормом, потерпел крушение. ...
-          </p>
-          <a href="detail.html">Читать полный текст</a>
-        </article>                 
+        <h1>Лента записей</h1>
+
+        {% if posts %}
+          <div class="list-group">
+            {% for post in posts %}
+              <article class="list-group-item mb-3">
+                <h2 class="h5">
+                  <a href="{% url 'blog:post_detail' post.id %}">{{ post.title }}</a>
+                </h2>
+                <ul class="list-unstyled mb-2 text-muted small">
+                  <li>
+                    Место: {{ post.location|default:'Не указано' }}
+                  </li>
+                  <li>
+                    Дата: {{ post.pub_date|date:"d F Y" }}
+                  </li>
+                  <li>
+                    Категория:
+                    {% if post.category %}
+                      <a href="{% url 'blog:category_posts' post.category.slug %}">{{ post.category.name }}</a>
+                    {% else %}
+                      Без категории
+                    {% endif %}
+                  </li>
+                </ul>
+                <p>{{ post.text|truncatechars:200 }}</p>
+                <a href="{% url 'blog:post_detail' post.id %}" class="btn btn-primary btn-sm">Читать полный текст</a>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p>Постов пока нет.</p>
+        {% endif %}
+
       </div>
     </main>
     <footer class="border-top text-center py-3">
-      <p>© Блогикум</p>    
+      <p>© Блогикум</p>
     </footer>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
   </body>
 </html>
