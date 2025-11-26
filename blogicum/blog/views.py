@@ -19,7 +19,10 @@ def index(request):
         'title': 'Главная страница блога',
         'posts': posts
     }
-    print("DEBUG context keys:", list(context.keys()))
+    print("DEBUG index posts sample types:",
+          [type(p) for p in list(posts)[:5]])
+    print("DEBUG index posts first repr:",
+          [repr(p) for p in list(posts)[:3]])
     return render(request, 'blog/index.html', context)
 
 
@@ -42,7 +45,15 @@ def category_posts(request, slug):
         'slug': slug,
         'title': category.title
     }
-    print("DEBUG context keys:", list(context.keys()))
+    print("DEBUG category type:", type(category))
+    print("DEBUG category repr:",
+          getattr(category,
+                  '__repr__',
+                  lambda: str(category))())
+    print("DEBUG category posts sample types:",
+          [type(p) for p in list(posts)[:5]])
+    print("DEBUG category posts first repr:",
+          [repr(p) for p in list(posts)[:3]])
     return render(request, 'blog/category.html', context)
 
 
@@ -65,5 +76,6 @@ def post_detail(request, id):
         'title': post.title,
         'text': post.text,
     }
-    print("DEBUG context keys:", list(context.keys()))
+    print("DEBUG post type:", type(post))
+    print("DEBUG post repr:", repr(post))
     return render(request, 'blog/detail.html', context)
