@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-from django.db.models import Q
+from django.db.models import Q, F
 from .models import Post, Category
 
 
@@ -10,8 +10,10 @@ def index(request):
         pub_date__lte=now,
         is_published=True,
         category__is_published=True
+    ).annotate(
+        location_is_published=F('location__is_published')
     ).filter(
-        Q(location__isnull=True) | Q(location__is_published=True)
+        Q(location__isnull=True) | Q(location_is_published=True)
     ).order_by('-pub_date')[:5]
     context = {
         'title': 'Главная страница блога',
@@ -28,8 +30,10 @@ def category_posts(request, slug):
         category=category,
         is_published=True,
         pub_date__lte=now
+    ).annotate(
+        location_is_published=F('location__is_published')
     ).filter(
-        Q(location__isnull=True) | Q(location__is_published=True)
+        Q(location__isnull=True) | Q(location_is_published=True)
     ).order_by('-pub_date')
     context = {
         'category': category,
@@ -47,8 +51,10 @@ def post_detail(request, id):
             is_published=True,
             pub_date__lte=now,
             category__is_published=True,
+        ).annotate(
+            location_is_published=F('location__is_published')
         ).filter(
-            Q(location__isnull=True) | Q(location__is_published=True)
+            Q(location__isnull=True) | Q(location_is_published=True)
         ),
         pk=id
     )
