@@ -1,10 +1,9 @@
 from django.contrib import admin
-from django.utils.translation import gettext_lazy as _
 from .models import Category, Location, Post
 
-admin.site.site_title = _("Блог")
-admin.site.site_header = _("Блог")
-admin.site.index_title = _("Управление")
+admin.site.site_title = "Блог"
+admin.site.site_header = "Блог"
+admin.site.index_title = "Управление"
 
 
 @admin.register(Category)
