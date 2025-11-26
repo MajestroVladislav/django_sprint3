@@ -10,16 +10,16 @@ class Category(models.Model):
     title = models.CharField('Заголовок', max_length=256)
     description = models.TextField('Описание')
     slug = models.SlugField(
-        _('Идентификатор'),
+        'Идентификатор',
         unique=True,
-        help_text=_('Идентификатор страницы для URL;'
+        help_text='Идентификатор страницы для URL;'
                     ' разрешены символы латиницы,'
-                    ' цифры, дефис и подчёркивание.')
+                    ' цифры, дефис и подчёркивание.'
     )
     is_published = models.BooleanField(
-        _('Опубликовано'),
+        'Опубликовано',
         default=True,
-        help_text=_('Снимите галочку, чтобы скрыть публикацию.')
+        help_text='Снимите галочку, чтобы скрыть публикацию.'
     )
     created_at = models.DateTimeField('Добавлено',
                                       auto_now_add=True)
