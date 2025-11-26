@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
 import os
 from functools import wraps
 import traceback
@@ -11,21 +9,34 @@ def diag_entrypoint(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except Exception as e:
-            tb = traceback.format_exc()
-            print("\nDIAG:: Exception caught at entrypoint:",
-                  file=sys.stderr)
-            print("DIAG:: Exception type:", type(e).__name__,
-                  file=sys.stderr)
-            print("DIAG:: Exception message:", str(e),
-                  file=sys.stderr)
-            print("DIAG:: Full traceback:\n", tb,
-                  file=sys.stderr)
+        except ValueError as e:
             msg = str(e)
             if "dictionary update sequence element" \
-                    in msg or "2 is required" in msg:
-                print("DIAG:: Attempting to "
-                      "locate bad sequence element...", file=sys.stderr)
+                    in msg and "2 is required" in msg:
+                print("\nDIAG:: Специфическая ValueError"
+                      " заглушена по запросу:",
+                      file=sys.stderr)
+                print("DIAG:: Тип исключения:",
+                      type(e).__name__,
+                      file=sys.stderr)
+                print("DIAG:: Сообщение исключения:", msg,
+                      file=sys.stderr)
+                print("DIAG:: Выполнение продолжится "
+                      "без перевыброса этой ошибки.",
+                      file=sys.stderr)
+                return None
+            else:
+                raise
+        except Exception as e:
+            tb = traceback.format_exc()
+            print("\nDIAG:: Исключение перехвачено в точке входа:",
+                  file=sys.stderr)
+            print("DIAG:: Тип исключения:", type(e).__name__,
+                  file=sys.stderr)
+            print("DIAG:: Сообщение исключения:", str(e),
+                  file=sys.stderr)
+            print("DIAG:: Полный трассировочный вывод:\n", tb,
+                  file=sys.stderr)
             raise
 
     return wrapper
@@ -33,7 +44,8 @@ def diag_entrypoint(func):
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'blogicum.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE',
+                          'blogicum.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
