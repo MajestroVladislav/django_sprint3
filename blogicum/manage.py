@@ -5,6 +5,7 @@ from functools import wraps
 import traceback
 import sys
 
+
 def diag_entrypoint(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
