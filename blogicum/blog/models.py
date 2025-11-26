@@ -55,8 +55,8 @@ class Post(models.Model):
     pub_date = models.DateTimeField(
         _('Дата и время публикации'),
         default=timezone.now,
-        help_text=_('Если установить дату и время в будущем '
-                    '— можно делать отложенные публикации.')
+        help_text=_('Если установить дату и время в будущем'
+                    ' — можно делать отложенные публикации.')
     )
     author = models.ForeignKey(
         User,
@@ -74,7 +74,7 @@ class Post(models.Model):
         Category,
         on_delete=models.SET_NULL,
         null=True,
-        blank=True,
+        blank=False,
         verbose_name=_('Категория')
     )
     is_published = models.BooleanField(_('Опубликовано'),
@@ -85,7 +85,7 @@ class Post(models.Model):
     class Meta:
         verbose_name = _('публикация')
         verbose_name_plural = _('Публикации')
-        ordering = ('-pub_date',)  # Добавляем сортировку
+        ordering = ('-pub_date',)
 
     def __str__(self):
         return self.title

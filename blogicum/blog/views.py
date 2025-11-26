@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-from .models import Post, Category
 from django.db.models import Q
+from .models import Post, Category
 
 
 def index(request):
@@ -13,12 +13,16 @@ def index(request):
     ).filter(
         Q(location__isnull=True) | Q(location__is_published=True)
     ).order_by('-pub_date')[:5]
-    return render(request, 'blog/index.html', {'posts': posts})
+    context = {
+        'title': 'Главная страница блога',
+        'posts': posts
+    }
+    return render(request, 'blog/index.html', context)
 
 
-# Переименовываем функцию 'category' в 'category_posts'
 def category_posts(request, slug):
-    category = get_object_or_404(Category, slug=slug, is_published=True)
+    category = get_object_or_404(Category, slug=slug,
+                                 is_published=True)
     now = timezone.now()
     posts = Post.objects.filter(
         category=category,
@@ -27,12 +31,16 @@ def category_posts(request, slug):
     ).filter(
         Q(location__isnull=True) | Q(location__is_published=True)
     ).order_by('-pub_date')
-    return render(request, 'blog/category.html',
-                  {'category': category, 'posts': posts})
+    context = {
+        'category': category,
+        'posts': posts,
+        'slug': slug,
+        'title': category.title
+    }
+    return render(request, 'blog/category.html', context)
 
 
-# Обновляем функцию 'post_detail' для более строгой проверки location
-def post_detail(request, pk):
+def post_detail(request, id):
     now = timezone.now()
     post = get_object_or_404(
         Post.objects.filter(
@@ -42,6 +50,11 @@ def post_detail(request, pk):
         ).filter(
             Q(location__isnull=True) | Q(location__is_published=True)
         ),
-        pk=pk
+        pk=id
     )
-    return render(request, 'blog/detail.html', {'post': post})
+    context = {
+        'post': post,
+        'title': post.title,
+        'text': post.text,
+    }
+    return render(request, 'blog/detail.html', context)
