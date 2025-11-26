@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from .models import Category, Location, Post
 
-
 admin.site.site_title = _("Блог")
 admin.site.site_header = _("Блог")
 admin.site.index_title = _("Управление")
@@ -14,9 +13,9 @@ class CategoryAdmin(admin.ModelAdmin):
     list_filter = ("is_published",)
     search_fields = ("title", "slug")
     fieldsets = (
-    (None, {
-    "fields": ("title", "description", "slug", "is_published"),
-    }),
+        (None, {
+            "fields": ("title", "description", "slug", "is_published"),
+        }),
     )
 
 
@@ -26,9 +25,9 @@ class LocationAdmin(admin.ModelAdmin):
     list_filter = ("is_published",)
     search_fields = ("name",)
     fieldsets = (
-    (None, {
-    "fields": ("name", "is_published"),
-    }),
+        (None, {
+            "fields": ("name", "is_published"),
+        }),
     )
 
 
@@ -38,8 +37,8 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ("is_published", "pub_date", "category")
     search_fields = ("title", "text", "author__username")
     fieldsets = (
-    (None, {
-    "fields": ("title", "text", "pub_date", "author",
-               "category", "location", "is_published"),
-    }),
+        (None, {
+            "fields": ("title", "text", "pub_date", "author",
+                       "category", "location", "is_published"),
+        }),
     )
