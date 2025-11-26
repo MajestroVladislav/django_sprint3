@@ -5,8 +5,10 @@ from django.contrib.auth import get_user_model
 # Получаем модель пользователя Django
 User = get_user_model()
 
+
 class Category(models.Model):
     """Модель для тематических категорий постов."""
+
     title = models.CharField(
         max_length=256,
         verbose_name='Заголовок',
@@ -42,6 +44,7 @@ class Category(models.Model):
 
 class Location(models.Model):
     """Модель для географических меток."""
+
     name = models.CharField(
         max_length=256,
         verbose_name='Название локации',
@@ -68,6 +71,7 @@ class Location(models.Model):
 
 class Post(models.Model):
     """Модель для публикаций (постов) в блоге."""
+
     title = models.CharField(
         max_length=256,
         verbose_name='Заголовок поста',
@@ -99,7 +103,7 @@ class Post(models.Model):
         Category,
         on_delete=models.SET_NULL,
         null=True,  # Позволяет установить NULL при удалении категории
-        blank=False,  # Категория обязательна при создании/редактировании поста
+        blank=False,  # Категория обязательна
         verbose_name='Категория',
         help_text='Категория, к которой относится пост'
     )
@@ -116,7 +120,7 @@ class Post(models.Model):
     class Meta:
         verbose_name = 'Публикация'
         verbose_name_plural = 'Публикации'
-        ordering = ('-pub_date',)  # Сортировка по дате публикации, от новых к старым
+        ordering = ('-pub_date',)  # Сортировка по дате
 
     def __str__(self):
         return self.title

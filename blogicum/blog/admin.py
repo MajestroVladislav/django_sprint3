@@ -7,6 +7,7 @@ admin.site.site_title = _("Блог")
 admin.site.site_header = _("Блог")
 admin.site.index_title = _("Управление")
 
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ("id", "title", "is_published")
@@ -17,6 +18,7 @@ class CategoryAdmin(admin.ModelAdmin):
     "fields": ("title", "description", "slug", "is_published"),
     }),
     )
+
 
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
@@ -29,6 +31,7 @@ class LocationAdmin(admin.ModelAdmin):
     }),
     )
 
+
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     list_display = ("id", "title", "author", "pub_date", "is_published")
@@ -36,6 +39,7 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ("title", "text", "author__username")
     fieldsets = (
     (None, {
-    "fields": ("title", "text", "pub_date", "author", "category", "location", "is_published"),
+    "fields": ("title", "text", "pub_date", "author",
+               "category", "location", "is_published"),
     }),
     )
