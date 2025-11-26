@@ -6,8 +6,9 @@ from .models import Post, Category
 def index(request):  # Главная страница
     now = timezone.now()
     posts = Post.objects.filter(pub_date__lte=now,
-                    is_published=True,
-                    category__is_published=True).order_by('-pub_date')[:5]
+                                is_published=True,
+                                category__is_published=
+                                True).order_by('-pub_date')[:5]
     return render(request, 'blog/index.html', {'posts': posts})
 
 
