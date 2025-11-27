@@ -7,29 +7,24 @@ User = get_user_model()
 
 
 class Category(models.Model):
-    title = models.CharField('Заголовок', max_length=256)
-    description = models.TextField('Описание')
-    slug = models.SlugField(
-        'Идентификатор',
-        unique=True,
-        help_text='Идентификатор страницы для URL;'
-                  ' разрешены символы латиницы,'
-                  ' цифры, дефис и подчёркивание.'
-    )
-    is_published = models.BooleanField(
-        'Опубликовано',
-        default=True,
-        help_text='Снимите галочку, чтобы скрыть публикацию.'
-    )
-    created_at = models.DateTimeField('Добавлено',
-                                      auto_now_add=True)
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    slug = models.SlugField(max_length=200, unique=True)
+    is_published = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        verbose_name = 'категория'
-        verbose_name_plural = 'Категории'
+    # Добавляем новые поля
+    field1 = models.CharField(max_length=200, default='default_value')
+    field2 = models.CharField(max_length=200, default='default_value')
+    field3 = models.CharField(max_length=200, default='default_value')
+    field4 = models.CharField(max_length=200, default='default_value')
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
 
 
 class Location(models.Model):
@@ -80,6 +75,10 @@ class Post(models.Model):
                                        default=True)
     created_at = models.DateTimeField('Добавлено',
                                       auto_now_add=True)
+
+    field1 = models.CharField(max_length=200, default='default_value')
+    field2 = models.CharField(max_length=200, default='default_value')
+    field3 = models.CharField(max_length=200, default='default_value')
 
     class Meta:
         verbose_name = 'публикация'
