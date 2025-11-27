@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.utils import timezone
 
-# Получаем модель пользователя Django
 User = get_user_model()
 
 
@@ -11,29 +9,30 @@ class Category(models.Model):
     description = models.TextField('Описание')
     slug = models.SlugField(
         'Идентификатор',
-        max_length=200,
         unique=True,
-        help_text='Идентификатор страницы для URL;'
-                  ' разрешены символы латиницы, цифры, дефис и подчёркивание.'
+        help_text=('Идентификатор страницы для URL;'
+                   ' разрешены символы '
+                   'латиницы, цифры, дефис и'
+                   ' подчёркивание.')
     )
     is_published = models.BooleanField(
         'Опубликовано',
         default=True,
         help_text='Снимите галочку, чтобы скрыть публикацию.'
     )
-    created_at = models.DateTimeField('Добавлено', auto_now_add=True)
-
-    def __str__(self):
-        return self.title
+    created_at = models.DateTimeField('Добавлено',
+                                      auto_now_add=True)
 
     class Meta:
         verbose_name = 'категория'
         verbose_name_plural = 'Категории'
 
+    def __str__(self):
+        return self.title
+
 
 class Location(models.Model):
-    name = models.CharField('Название места',
-                            max_length=256)
+    name = models.CharField('Название места', max_length=256)
     is_published = models.BooleanField('Опубликовано',
                                        default=True)
     created_at = models.DateTimeField('Добавлено',
@@ -52,9 +51,8 @@ class Post(models.Model):
     text = models.TextField('Текст')
     pub_date = models.DateTimeField(
         'Дата и время публикации',
-        default=timezone.now,
-        help_text='Если установить дату и время в '
-                  'будущем — можно делать отложенные публикации.'
+        help_text=('Если установить дату и время в будущем — '
+                   'можно делать отложенные публикации.')
     )
     author = models.ForeignKey(
         User,
@@ -72,10 +70,12 @@ class Post(models.Model):
         Category,
         on_delete=models.SET_NULL,
         null=True,
-        verbose_name='Категория'  # Убрать blank=False
+        verbose_name='Категория'
     )
-    is_published = models.BooleanField('Опубликовано', default=True)
-    created_at = models.DateTimeField('Добавлено', auto_now_add=True)
+    is_published = models.BooleanField('Опубликовано',
+                                       default=True)
+    created_at = models.DateTimeField('Добавлено',
+                                      auto_now_add=True)
 
     class Meta:
         verbose_name = 'публикация'
