@@ -7,17 +7,20 @@ User = get_user_model()
 
 
 class Category(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    slug = models.SlugField(max_length=200, unique=True)
-    is_published = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    # Добавляем новые поля
-    field1 = models.CharField(max_length=200, default='default_value')
-    field2 = models.CharField(max_length=200, default='default_value')
-    field3 = models.CharField(max_length=200, default='default_value')
-    field4 = models.CharField(max_length=200, default='default_value')
+    title = models.CharField('Заголовок', max_length=256)  # Добавьте verbose_name
+    description = models.TextField('Описание')  # Добавьте verbose_name
+    slug = models.SlugField(
+        'Идентификатор',
+        max_length=200,
+        unique=True,
+        help_text='Идентификатор страницы для URL; разрешены символы латиницы, цифры, дефис и подчёркивание.'
+    )
+    is_published = models.BooleanField(
+        'Опубликовано',
+        default=True,
+        help_text='Снимите галочку, чтобы скрыть публикацию.'
+    )
+    created_at = models.DateTimeField('Добавлено', auto_now_add=True)
 
     def __str__(self):
         return self.title
@@ -49,8 +52,7 @@ class Post(models.Model):
     pub_date = models.DateTimeField(
         'Дата и время публикации',
         default=timezone.now,
-        help_text='Если установить дату и время в будущем'
-                  ' — можно делать отложенные публикации.'
+        help_text='Если установить дату и время в будущем — можно делать отложенные публикации.'
     )
     author = models.ForeignKey(
         User,
@@ -68,17 +70,10 @@ class Post(models.Model):
         Category,
         on_delete=models.SET_NULL,
         null=True,
-        blank=False,
-        verbose_name='Категория'
+        verbose_name='Категория'  # Убрать blank=False
     )
-    is_published = models.BooleanField('Опубликовано',
-                                       default=True)
-    created_at = models.DateTimeField('Добавлено',
-                                      auto_now_add=True)
-
-    field1 = models.CharField(max_length=200, default='default_value')
-    field2 = models.CharField(max_length=200, default='default_value')
-    field3 = models.CharField(max_length=200, default='default_value')
+    is_published = models.BooleanField('Опубликовано', default=True)
+    created_at = models.DateTimeField('Добавлено', auto_now_add=True)
 
     class Meta:
         verbose_name = 'публикация'

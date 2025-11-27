@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/fav/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/fav/favicon-16x16.png' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <title>Публикации в категории: {{ category.name|default:category.slug }}</title>
+    <h1>Публикации в категории: {{ category.title }}</h1>
   </head>
   <body>
     <header>
