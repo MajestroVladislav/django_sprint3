@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Post, Category
 from django.utils import timezone
 from django.conf import settings
+from .models import Post, Category
 
 
 def index(request):
-    posts = Post.objects.select_related(
+    post_list = Post.objects.select_related(
         'category', 'location', 'author'
     ).filter(
         is_published=True,
@@ -13,10 +13,7 @@ def index(request):
         category__is_published=True
     ).order_by('-pub_date')[:settings.NUMBER_OF_POSTS_ON_MAIN_PAGE]
 
-    context = {
-        'posts': posts,
-    }
-    return render(request, 'blog/index.html', context)
+    return render(request, 'blog/index.html', {'posts': post_list})
 
 
 def post_detail(request, id):
@@ -29,21 +26,16 @@ def post_detail(request, id):
         ),
         pk=id
     )
-
-    context = {
-        'post': post,
-    }
-    return render(request, 'blog/detail.html', context)
+    return render(request, 'blog/detail.html', {'post': post})
 
 
 def category_posts(request, slug):
     category = get_object_or_404(
-        Category,
-        is_published=True,
+        Category.objects.filter(is_published=True),
         slug=slug
     )
 
-    posts = Post.objects.select_related(
+    post_list = Post.objects.select_related(
         'category', 'location', 'author'
     ).filter(
         category=category,
@@ -51,8 +43,7 @@ def category_posts(request, slug):
         pub_date__lte=timezone.now()
     ).order_by('-pub_date')
 
-    context = {
+    return render(request, 'blog/category.html', {
         'category': category,
-        'posts': posts,
-    }
-    return render(request, 'blog/category.html', context)
+        'posts': post_list
+    })

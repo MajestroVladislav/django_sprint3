@@ -10,10 +10,9 @@ class Category(models.Model):
     slug = models.SlugField(
         'Идентификатор',
         unique=True,
-        help_text=('Идентификатор страницы для URL;'
-                   ' разрешены символы '
-                   'латиницы, цифры, дефис и'
-                   ' подчёркивание.')
+        help_text=('Идентификатор страницы для URL; '
+                   'разрешены символы '
+                   'латиницы, цифры, дефис и подчёркивание.')
     )
     is_published = models.BooleanField(
         'Опубликовано',
@@ -32,7 +31,8 @@ class Category(models.Model):
 
 
 class Location(models.Model):
-    name = models.CharField('Название места', max_length=256)
+    name = models.CharField('Название места',
+                            max_length=256)
     is_published = models.BooleanField('Опубликовано',
                                        default=True)
     created_at = models.DateTimeField('Добавлено',
