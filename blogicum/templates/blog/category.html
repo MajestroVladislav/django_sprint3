@@ -1,12 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Категория: {{ category.title }}</title>
-</head>
-<body>
-    <h1>Категория: {{ category.title }}</h1>
-    {% for post in posts %}
-        <h2>{{ post.title }}</h2>
-    {% endfor %}
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}
+  Публикации в категории «{{ category.title }}»
+{% endblock %}
+{% block content %}
+<h1>Публикации в категории «{{ category.title }}»</h1>
+<p class="mb-5">{{ category.description }}</p>
+{% for post in post_list %}
+  <article class="mb-5">  
+    {% include "includes/post_card.html" %}
+  </article>   
+{% endfor %}
+
+{% endblock %}

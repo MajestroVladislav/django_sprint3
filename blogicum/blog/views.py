@@ -1,31 +1,66 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from django.http import Http404
 from .models import Post, Category
+
+# Create your views here.
 
 
 def index(request):
-    posts = Post.objects.filter(
+    template = 'blog/index.html'
+    post_list = Post.objects.select_related(
+        'location', 'category', 'author'
+    ).filter(
         is_published=True,
-        pub_date__lte=timezone.now(),
-        category__is_published=True
-    ).order_by('-pub_date')[:5]
-    return render(request, 'blog/index.html', {'posts': posts})
-
-
-def post_detail(request, id):
-    post = get_object_or_404(Post, pk=id)
-    return render(request, 'blog/detail.html', {'post': post})
-
-
-def category_posts(request, slug):
-    category = get_object_or_404(Category, slug=slug,
-                                 is_published=True)
-    posts = Post.objects.filter(
-        category=category,
-        is_published=True,
+        category__is_published=True,
         pub_date__lte=timezone.now()
-    ).order_by('-pub_date')
-    return render(request, 'blog/category.html', {
+    ).reverse()[:5]
+
+    context = {
+        'post_list': post_list
+    }
+    return render(request, template, context)
+
+
+def post_detail(request, post_id):
+    template = 'blog/detail.html'
+    post = get_object_or_404(
+        Post.objects.select_related(
+            'location', 'category', 'author'
+        ).filter(
+            is_published=True,
+            category__is_published=True,
+            pub_date__lte=timezone.now()
+        ),
+        pk=post_id
+    )
+    context = {
+        'post': post
+    }
+    return render(request, template, context)
+
+
+def category_posts(request, category_slug):
+    template = 'blog/category.html'
+    try:
+        category = Category.objects.get(slug=category_slug)
+    except Exception:
+        category = category_slug
+        post_list = []
+    else:
+        if category.is_published:
+            post_list = Post.objects.select_related(
+                'location', 'category', 'author'
+            ).filter(
+                is_published=True,
+                category__title=category.title,
+                pub_date__lte=timezone.now()
+            ).reverse()
+        else:
+            raise Http404(f'Категория {category.title} не для публикации')
+
+    context = {
         'category': category,
-        'posts': posts
-    })
+        'post_list': post_list
+    }
+    return render(request, template, context)
